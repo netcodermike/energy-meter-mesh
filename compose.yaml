@@ -1,0 +1,24 @@
+services:
+  reporter:
+    build: ./services/reporter
+    ports:
+      - "127.0.0.1:${DEMO_PORT:-8080}:8080"
+    environment:
+      HOST: 0.0.0.0
+      PORT: "8080"
+      OPERATION_PATH: /usage
+      UPSTREAM_URL: http://meter:8081/readings
+    depends_on:
+      - meter
+  meter:
+    build: ./services/meter
+    environment:
+      HOST: 0.0.0.0
+      PORT: "8081"
+      OPERATION_PATH: /readings
+      DB_PATH: /data/demo.sqlite3
+    volumes:
+      - service-data:/data
+
+volumes:
+  service-data:

@@ -1,0 +1,74 @@
+{
+  "slug": "energy-meter-mesh",
+  "gateway": [
+    "reporter",
+    "/usage",
+    "JavaScript"
+  ],
+  "worker": [
+    "meter",
+    "/readings",
+    "Python"
+  ],
+  "cases": [
+    [
+      "Ingest two half-hour intervals",
+      {
+        "site": "Studio",
+        "rateCents": 18,
+        "readings": [
+          {
+            "start": "2026-11-11T15:00:00Z",
+            "wh": 1200
+          },
+          {
+            "start": "2026-11-11T15:30:00Z",
+            "wh": 2600
+          }
+        ]
+      },
+      200,
+      {
+        "intervals": 2,
+        "totalKwh": 3.8,
+        "peakKw": 5.2,
+        "costCents": 68
+      }
+    ],
+    [
+      "Replay the same interval",
+      {
+        "site": "Studio",
+        "rateCents": 18,
+        "readings": [
+          {
+            "start": "2026-11-11T15:30:00Z",
+            "wh": 2600
+          }
+        ]
+      },
+      200,
+      {
+        "intervals": 2,
+        "totalKwh": 3.8
+      }
+    ],
+    [
+      "Reject a conflicting retry",
+      {
+        "site": "Studio",
+        "rateCents": 18,
+        "readings": [
+          {
+            "start": "2026-11-11T15:30:00Z",
+            "wh": 999
+          }
+        ]
+      },
+      409,
+      {
+        "error": "Reading already exists with a different value"
+      }
+    ]
+  ]
+}
